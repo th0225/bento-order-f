@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+	import AppBar from '$lib/components/AppBar.svelte';
+</script>
+
+<div class="dard:bg-dark-bg min-h-screen bg-calico-bg">
+	<AppBar title="Bento Order" />
+</div>

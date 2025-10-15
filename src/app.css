@@ -1,2 +1,14 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/typography';
+@config '../tailwind.config.ts';
+
+.input-style {
+	@apply bg-calico-secondary text-calico-text placeholder-calico-soft border-calico-orange focus:ring-calico-orange dark:bg-dark-secondary dark:text-dark-text dark:placeholder-dark-soft dark:border-dark-orange dark:focus:ring-dark-orange mt-1 w-full rounded-xl border px-4 py-2 transition focus:ring-1 focus:outline-none;
+}
+
+.select-style {
+	@apply bg-calico-secondary text-calico-text placeholder-calico-soft border-calico-orange focus:ring-calico-orange dark:bg-dark-secondary dark:text-dark-text dark:placeholder-dark-soft dark:border-dark-orange dark:focus:ring-dark-orange mt-1 rounded-md border px-4 py-1 transition focus:ring-1 focus:outline-none;
+}
+
+.input-text-style {
+	@apply text-calico-black dark:text-dark-black;
+}
