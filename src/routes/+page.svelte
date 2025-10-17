@@ -3,7 +3,10 @@
 	import Calendar from '$lib/components/Calendar.svelte';
 </script>
 
-<div class="dark:bg-dark-bg min-h-screen bg-calico-bg">
+<div class="min-h-screen bg-calico-bg dark:bg-dark-bg">
 	<AppBar title="Bento Order" />
-	<Calendar />
+
+	<div class="mx-auto max-w-4xl">
+		<Calendar />
+	</div>
 </div>
