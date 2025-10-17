@@ -11,11 +11,11 @@ const config: Config = {
 					bg: '#FFFDF9',
 					secondary: '#FFF5E5',
 					orange: '#FFA75B',
-					hover: '#FF9944',
+					hover: '#ff8904',
 					active: '#E88433',
 					black: '#444444',
 					text: '#2B2B2B',
-					soft: '#B5B5B5'
+					soft: '#d4d4d4'
 				},
 				dark: {
 					bg: '#1F1F1F',
@@ -25,7 +25,7 @@ const config: Config = {
 					active: '#DD7B2B',
 					black: '#EAEAEA',
 					text: '#F5F5F5',
-					soft: '#C9C9C9'
+					soft: '#a1a1a1'
 				}
 			}
 		}
