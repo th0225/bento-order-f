@@ -1,87 +1,79 @@
 <script lang="ts">
-  // 引入icon
-  import { Menu, Ham, Sun, Moon, Github } from '@lucide/svelte';
-  import { initTheme, toggleTheme } from '$lib/theme';
+  let account = '';
+  let password = '';
+  let error = '';
 
-  // 引入自訂元件
-  import Calendar from '$lib/components/Calendar.svelte';
-  import Sidebar from '$lib/components/Sidebar.svelte';
+  function handleLogin() {
+    error = '';
+    if (!account || !password) {
+      error = '請填寫完整資料';
+      return;
+    }
 
-  // 是否為深色模式
-  let isDark = false;
-  // 切換主題顏色
-  function changeTheme() {
-    toggleTheme();
-    isDark = document.documentElement.classList.contains('dark');
-  }
-  // 在組件掛載時檢查當前主題
-  import { onMount } from 'svelte';
-  onMount(() => {
-    initTheme();
-    isDark = document.documentElement.classList.contains('dark');
-  });
-
-  let sidebarOpen = false;
-
-  function toggleSidebar() {
-    sidebarOpen = !sidebarOpen;
+    console.log('登入資料:', { account, password });
   }
 </script>
 
-<div class="min-h-screen bg-calico-bg dark:bg-dark-bg">
-  <!-- Appbar -->
-  <nav
-    class="mb-4 bg-calico-secondary
-        px-4 py-3 text-calico-black dark:bg-dark-secondary dark:text-dark-black"
+<div class="flex justify-center">
+  <div
+    class="w-full max-w-md rounded-xl bg-calico-secondary p-8 shadow-lg md:ml-32
+            dark:bg-dark-secondary"
   >
-    <div class="container mx-auto flex items-center justify-between">
+    <!-- 標題 -->
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-bold text-calico-text dark:text-dark-text">請輸入帳號密碼</h1>
+    </div>
+
+    <!-- 表單 -->
+    <form on:submit|preventDefault={handleLogin} class="space-y-4">
+      <div>
+        <label
+          for="account"
+          class="mb-1 block text-sm font-medium text-calico-text dark:text-dark-text"
+        >
+          帳號
+        </label>
+        <input
+          id="account"
+          type="text"
+          bind:value={account}
+          placeholder="A012345"
+          class="w-full rounded-lg border border-calico-soft bg-calico-bg px-4 py-2
+                focus:ring-2 focus:ring-calico-orange focus:outline-none
+                dark:border-gray-600 dark:bg-dark-bg dark:text-gray-100"
+        />
+      </div>
+
+      <div>
+        <label
+          for="password"
+          class="mb-1 block text-sm font-medium text-calico-text dark:text-dark-text"
+        >
+          密碼
+        </label>
+        <input
+          id="password"
+          type="password"
+          bind:value={password}
+          placeholder="••••••••"
+          class="w-full rounded-lg border border-calico-soft bg-calico-bg px-4 py-2
+                focus:ring-2 focus:ring-calico-orange focus:outline-none
+                dark:border-gray-600 dark:bg-dark-bg dark:text-gray-100"
+        />
+      </div>
+
+      {#if error}
+        <p class="text-sm text-red-500">{error}</p>
+      {/if}
+
       <button
-        class="flex cursor-pointer items-center gap-2 hover:text-gray-500
-										md:hidden"
-        on:click={toggleSidebar}
+        type="submit"
+        class="dark:bg-orange-orange mt-4 w-full rounded-lg bg-calico-orange py-2 font-medium
+              text-calico-text transition-colors hover:bg-calico-hover
+              dark:text-dark-text dark:hover:bg-dark-hover"
       >
-        <Menu />
+        登入
       </button>
-
-      <!-- 左側logo -->
-      <div class="flex items-center gap-2 text-xl font-semibold">
-        <Ham />
-        <span class="text-xl font-semibold">Bento Order</span>
-      </div>
-
-      <!-- 主題顏色切換 -->
-      <div class="flex items-center gap-6">
-        <button
-          on:click={changeTheme}
-          aria-label="切換主題顏色"
-          class="flex cursor-pointer items-center gap-2 hover:text-gray-500"
-        >
-          {#if isDark}
-            <Moon size="24" />
-          {:else}
-            <Sun size="24" />
-          {/if}
-        </button>
-        <a
-          href="https://github.com/th0225/bento-order-f"
-          class="block flex items-center gap-2 hover:text-gray-500"
-          aria-label="GitHub"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Github size="24" />
-        </a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="flex">
-    <Sidebar isOpen={sidebarOpen} onClose={() => (sidebarOpen = false)} />
-
-    <div class="flex-1 md:ml-32">
-      <div class="mx-auto max-w-4xl px-4">
-        <Calendar />
-      </div>
-    </div>
+    </form>
   </div>
 </div>

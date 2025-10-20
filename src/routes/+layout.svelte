@@ -1,12 +1,19 @@
 <script lang="ts">
-	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
+  import '../app.css';
+  import favicon from '$lib/assets/favicon.svg';
+  import Appbar from './appbar.svelte';
 
-	let { children } = $props();
+  let { children } = $props();
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
+<div class="min-h-screen bg-calico-bg dark:bg-dark-bg">
+  <Appbar />
 
-{@render children?.()}
+  <main>
+    {@render children()}
+  </main>
+</div>
+
+<svelte:head>
+  <link rel="icon" href={favicon} />
+</svelte:head>
