@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X, House, ChartBar, LogOut } from '@lucide/svelte';
+  import { X, SquarePen, ChartBar, LogOut } from '@lucide/svelte';
 
   export let isOpen = false;
   export let onClose: () => void;
@@ -14,7 +14,7 @@
 >
   <nav class="space-y-2 p-4">
     <a href="/" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
-      <House size={18} /> 首頁
+      <SquarePen size={18} /> 訂餐
     </a>
     <a href="/" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
       <ChartBar size={18} /> 統計
@@ -43,8 +43,8 @@
       <a href="/" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
         <House /> 首頁
       </a>
-      <a href="/" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
-        <ChartBar /> 報表
+      <a href="/statistics" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
+        <ChartBar /> 統計
       </a>
       <a href="/" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
         <LogOut /> 登出

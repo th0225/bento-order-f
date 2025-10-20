@@ -79,7 +79,7 @@
     <Sidebar isOpen={sidebarOpen} onClose={() => (sidebarOpen = false)} />
 
     <div class="flex-1 md:ml-32">
-      <div class="mx-auto max-w-4xl p-6">
+      <div class="mx-auto max-w-4xl px-4">
         <Calendar />
       </div>
     </div>

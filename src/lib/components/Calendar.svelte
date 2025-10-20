@@ -94,7 +94,7 @@
 </script>
 
 <!-- 年月 -->
-<div class="flex items-center justify-between w-full max-w-md mx-auto py-3">
+<div class="flex items-center justify-between w-full max-w-md mx-auto">
   <button
     on:click={getPrevMonth}
     class="rounded-full px-3 py-1 text-calico-black transition hover:bg-calico-hover
