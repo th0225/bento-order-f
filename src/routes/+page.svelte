@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { authStore } from '$lib/stores/auth';
+  import { goto } from '$app/navigation';
+  import { get } from 'svelte/store';
+
   let account = '';
   let password = '';
   let error = '';
@@ -10,13 +14,32 @@
       return;
     }
 
+    if (account === 'admin' && password === '1234') {
+      authStore.set({
+        isLoggedIn: true,
+        user: { name: 'admin', id: 'A000000', level: 0 }
+      });
+      localStorage.setItem('auth', JSON.stringify(get(authStore)));
+      goto('/order');
+    } else if (account === 'user1' && password === '1234') {
+      authStore.set({
+        isLoggedIn: true,
+        user: { name: 'user1', id: 'A001000', level: 1 }
+      });
+      localStorage.setItem('auth', JSON.stringify(get(authStore)));
+      goto('/order');
+    } else {
+      error = '帳號或密碼錯誤';
+      return;
+    }
+
     console.log('登入資料:', { account, password });
   }
 </script>
 
-<div class="flex justify-center">
+<div class="flex min-h-screen items-center justify-center">
   <div
-    class="w-full max-w-md rounded-xl bg-calico-secondary p-8 shadow-lg md:ml-32
+    class="w-full max-w-md rounded-xl bg-calico-secondary p-8 shadow-lg
             dark:bg-dark-secondary"
   >
     <!-- 標題 -->

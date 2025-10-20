@@ -1,10 +1,8 @@
 <script lang="ts">
-  // 引入icon
+  import { onMount } from 'svelte';
   import { Menu, Ham, Sun, Moon, Github } from '@lucide/svelte';
   import { initTheme, toggleTheme } from '$lib/theme';
 
-  // 引入自訂元件
-  import Calendar from '$lib/components/Calendar.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
 
   // 是否為深色模式
@@ -14,9 +12,8 @@
     toggleTheme();
     isDark = document.documentElement.classList.contains('dark');
   }
-  // 在組件掛載時檢查當前主題
-  import { onMount } from 'svelte';
   onMount(() => {
+    // 檢查主題顏色
     initTheme();
     isDark = document.documentElement.classList.contains('dark');
   });
