@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { clearAuth, clearToken, setAuth, setToken } from '$lib/api';
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
   import { get } from 'svelte/store';
@@ -7,33 +8,53 @@
   let password = '';
   let error = '';
 
-  function handleLogin() {
+  async function handleLogin() {
     error = '';
     if (!account || !password) {
       error = '請填寫完整資料';
       return;
     }
 
-    if (account === 'admin' && password === '1234') {
+    // 向後端發送登入請求
+    const res = await fetch('http://localhost:5162/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ account, password })
+    });
+
+    // 登入失敗
+    if (!res.ok) {
       authStore.set({
-        isLoggedIn: true,
-        user: { name: 'admin', id: 'A000000', level: 0 }
+        isLoggedIn: false,
+        user: null
       });
-      localStorage.setItem('auth', JSON.stringify(get(authStore)));
-      goto('/order');
-    } else if (account === 'user1' && password === '1234') {
-      authStore.set({
-        isLoggedIn: true,
-        user: { name: 'user1', id: 'A001000', level: 1 }
-      });
-      localStorage.setItem('auth', JSON.stringify(get(authStore)));
-      goto('/order');
-    } else {
+      clearToken();
+      clearAuth();
       error = '帳號或密碼錯誤';
       return;
     }
 
-    console.log('登入資料:', { account, password });
+    // 登入成功，處理回應資料
+    const data = await res.json();
+    console.log('登入回應資料:', data);
+    authStore.set({
+      isLoggedIn: true,
+      user: {
+        id: data.id,
+        account: data.account,
+        name: data.name,
+        role: data.role
+      }
+    });
+
+    // 儲存認證狀態
+    setAuth(JSON.stringify(get(authStore)));
+    setToken(data.token);
+
+    // 導向訂餐頁面
+    goto('/order');
   }
 </script>
 

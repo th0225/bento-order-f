@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { clearAuth, clearToken } from '$lib/api';
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
 
@@ -9,7 +10,8 @@
 
   function logout() {
     authStore.set({ isLoggedIn: false, user: null });
-    localStorage.removeItem('auth');
+    clearAuth();
+    clearToken();
     goto('/');
   }
 </script>
@@ -29,7 +31,7 @@
       <SquarePen size={18} /> 訂餐
     </a>
 
-    {#if $authStore.user?.level == 0}
+    {#if $authStore.user?.role == 'admin'}
       <a href="/statistics" class="flex items-center gap-2 p-2 hover:text-gray-500">
         <ChartBar size={18} /> 統計
       </a>
