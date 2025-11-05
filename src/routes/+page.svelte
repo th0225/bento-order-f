@@ -3,6 +3,7 @@
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
   import { get } from 'svelte/store';
+    import { User } from '@lucide/svelte';
 
   let account = '';
   let password = '';
@@ -53,8 +54,16 @@
     setAuth(JSON.stringify(get(authStore)));
     setToken(data.token);
 
-    // 導向訂餐頁面
-    goto('/order');
+    if (data.role == 'user')
+    {
+      // 導向訂餐頁面
+      goto('/order');
+    }
+    else
+    {
+      // 導向訂餐頁面
+      goto('/statistics');
+    }
   }
 </script>
 

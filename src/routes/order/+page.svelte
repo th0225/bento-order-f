@@ -94,7 +94,7 @@
 </script>
 
 <div class="flex justify-center">
-  <div class="md:ml-32 md:p-4">
+  <div>
     <div class="mx-auto flex w-full max-w-md items-center justify-between">
       <button
         on:click={getPrevMonth}

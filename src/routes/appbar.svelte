@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Menu, Ham, Sun, Moon, Github } from '@lucide/svelte';
+  import { authStore } from '$lib/stores/auth';
+  import { goto } from '$app/navigation';
+  import { clearAuth, clearToken } from '$lib/api';
+  import { Menu, Ham, User, LogOut, Sun, Moon, Github } from '@lucide/svelte';
   import { initTheme, toggleTheme } from '$lib/theme';
 
   import Sidebar from '$lib/components/Sidebar.svelte';
@@ -23,6 +26,13 @@
   function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
   }
+
+  function logout() {
+    authStore.set({ isLoggedIn: false, user: null });
+    clearAuth();
+    clearToken();
+    goto('/');
+  }
 </script>
 
 <div class="bg-calico-bg dark:bg-dark-bg">
@@ -33,8 +43,7 @@
   >
     <div class="container mx-auto flex items-center justify-between">
       <button
-        class="flex cursor-pointer items-center gap-2 hover:text-gray-500
-										md:hidden"
+        class="flex cursor-pointer items-center gap-2 hover:text-gray-500 md:hidden"
         on:click={toggleSidebar}
       >
         <Menu />
@@ -42,37 +51,53 @@
 
       <!-- 左側logo -->
       <div class="flex items-center gap-2 text-xl font-semibold">
-        <Ham />
-        <span class="text-xl font-semibold">Bento Order</span>
+        <Ham size="28"/>
+        <span class="text-2xl font-semibold">Bento Order</span>
       </div>
 
-      <!-- 主題顏色切換 -->
-      <div class="flex items-center gap-6">
-        <button
-          on:click={changeTheme}
-          aria-label="切換主題顏色"
-          class="flex cursor-pointer items-center gap-2 hover:text-gray-500"
-        >
-          {#if isDark}
-            <Moon size="24" />
-          {:else}
-            <Sun size="24" />
-          {/if}
-        </button>
-        <a
-          href="https://github.com/th0225/bento-order-f"
-          class="block flex items-center gap-2 hover:text-gray-500"
-          aria-label="GitHub"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Github size="24" />
-        </a>
+      <!-- 右側 -->
+      <div class="flex items-center gap-8">
+        <!-- 使用者名稱及登出 -->
+        <div class="flex items-center gap-3">
+          <User />{$authStore.user?.name}
+          <button
+            on:click={logout}
+            class="dark:bg-orange-orange rounded-lg bg-calico-orange px-4 py-1 font-medium
+              text-calico-text transition-colors hover:bg-calico-hover cursor-pointer
+              dark:text-dark-text dark:hover:bg-dark-hover"
+          >
+            登出
+          </button>
+        </div>
+
+        <!-- 切換主題顏色、github-->
+        <div class="flex items-center gap-3">
+          <button
+            on:click={changeTheme}
+            aria-label="切換主題顏色"
+            class="flex cursor-pointer items-center gap-2 hover:text-gray-500"
+          >
+            {#if isDark}
+              <Moon size="24" />
+            {:else}
+              <Sun size="24" />
+            {/if}
+          </button>
+          <a
+            href="https://github.com/th0225/bento-order-f"
+            class="block flex items-center gap-2 hover:text-gray-500"
+            aria-label="GitHub"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github size="24" />
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div class="flex">
+  <!-- <div class="flex">
     <Sidebar isOpen={sidebarOpen} onClose={() => (sidebarOpen = false)} />
-  </div>
+  </div> -->
 </div>

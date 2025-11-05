@@ -3,7 +3,7 @@
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
 
-  import { X, User, SquarePen, ChartBar, LogOut } from '@lucide/svelte';
+  import { X, User, Users, SquarePen, ChartBar, LogOut } from '@lucide/svelte';
 
   export let isOpen = false;
   export let onClose: () => void;
@@ -27,13 +27,22 @@
     <div class="mb-8 flex items-center gap-2 font-bold">
       <User />{$authStore.user?.name}
     </div>
-    <a href="/order" class="flex items-center gap-2 p-2 hover:text-gray-500">
-      <SquarePen size={18} /> 訂餐
-    </a>
+
+    {#if $authStore.user?.role == 'user'}
+      <a href="/order" class="flex items-center gap-2 p-2 hover:text-gray-500">
+        <SquarePen size={18} /> 訂餐
+      </a>
+    {/if}
 
     {#if $authStore.user?.role == 'admin'}
       <a href="/statistics" class="flex items-center gap-2 p-2 hover:text-gray-500">
         <ChartBar size={18} /> 統計
+      </a>
+    {/if}
+
+    {#if $authStore.user?.role == 'admin'}
+      <a href="/user" class="flex items-center gap-2 p-2 hover:text-gray-500">
+        <Users size={18} /> 用戶
       </a>
     {/if}
 
@@ -66,6 +75,9 @@
       </a>
       <a href="/statistics" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
         <ChartBar /> 統計
+      </a>
+      <a href="/user" class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
+        <Users /> 用戶
       </a>
       <button on:click={logout} class="flex items-center gap-2 rounded p-2 hover:text-gray-500">
         <LogOut /> 登出
