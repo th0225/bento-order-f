@@ -19,15 +19,4 @@ const mealSchedule: MealSchedule = {
   }
 };
 
-export let mealTypes: string[] = [
-  '---',
-  'A餐',
-  'B餐',
-  '素食',
-  '合菜',
-  'A餐不飯',
-  '合菜不飯',
-  '素食不飯'
-];
-
-
+export let mealTypes: string[] = ['---', 'A餐', 'B餐', '素食', '合菜'];

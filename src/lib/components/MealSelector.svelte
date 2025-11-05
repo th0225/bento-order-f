@@ -12,7 +12,4 @@
   <option value="">{mealTypes[2]}</option>
   <option value="">{mealTypes[3]}</option>
   <option value="">{mealTypes[4]}</option>
-  <option value="">{mealTypes[5]}</option>
-  <option value="">{mealTypes[6]}</option>
-  <option value="">{mealTypes[7]}</option>
 </select>

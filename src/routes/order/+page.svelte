@@ -93,7 +93,7 @@
   });
 </script>
 
-<div class="flex justify-center">
+<div class="flex justify-center max-w-6xl mx-auto">
   <div>
     <div class="mx-auto flex w-full max-w-md items-center justify-between">
       <button
@@ -146,21 +146,23 @@
                 <td class="h-10"></td>
               {:else}
                 <td>
-                  <div
-                    class="rounded-full text-center
-                          text-calico-text dark:text-dark-text
-                          ${item.date === currentDate &&
-                    selectedMonth === currentMonth &&
-                    selectedYear === currentYear
-                      ? ' bg-calico-orange font-bold text-calico-text dark:text-dark-orange '
-                      : item.day === 'Sat' || item.day === 'Sun'
-                        ? ' text-red-500 dark:text-red-400 '
-                        : ''}"
-                  >
-                    {item.date}
+                  <div class="bg-calico-secondary dark:bg-dark-secondary rounded-md p-2">
+                    <div
+                      class="rounded-full text-center mb-0.5
+                            text-calico-text dark:text-dark-text
+                            ${item.date === currentDate &&
+                          selectedMonth === currentMonth &&
+                          selectedYear === currentYear
+                        ? ' bg-calico-orange font-bold text-calico-text dark:text-dark-orange '
+                        : item.day === 'Sat' || item.day === 'Sun'
+                          ? ' text-red-500 dark:text-red-400 '
+                          : ''}"
+                    >
+                      {item.date}
+                    </div>
+                    <MealSelector />
+                    <MealSelector />
                   </div>
-                  <MealSelector />
-                  <MealSelector />
                 </td>
               {/if}
             {/each}
