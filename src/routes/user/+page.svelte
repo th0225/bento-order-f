@@ -72,44 +72,7 @@
   onMount(loadUsers);
 </script>
 
-<div class="space-y-6 md:ml-40">
-  <!-- Card: 新增使用者 -->
-  <!-- <div class="w-full max-w-md rounded-xl bg-calico-secondary p-8 shadow-lg
-            dark:bg-dark-secondary">
-    <h3 class="mb-3 text-lg font-semibold">新增使用者</h3>
-
-    <div class="space-y-3">
-      <div>
-        <label class="block text-sm font-medium">Account</label>
-        <input class="w-full rounded border px-3 py-2" bind:value={account} />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium">Name</label>
-        <input class="w-full rounded border px-3 py-2" bind:value={name} />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium">Password</label>
-        <input type="password" class="w-full rounded border px-3 py-2" bind:value={password} />
-      </div>
-
-      {#if errorMsg}
-        <p class="text-sm text-red-500">{errorMsg}</p>
-      {/if}
-
-      <button
-        on:click={addUser}
-        class="dark:bg-orange-orange mt-4 w-full rounded-lg bg-calico-orange py-2
-                font-medium text-calico-text transition-colors hover:bg-calico-hover
-                dark:text-dark-text dark:hover:bg-dark-hover"
-        disabled={loading}
-      >
-        {loading ? '新增中...' : '新增使用者'}
-      </button>
-    </div>
-  </div> -->
-
+<div class="space-y-6">
   <!-- Table: 使用者列表 -->
   <div>
     <table class="min-w-full overflow-hidden rounded-lg shadow-lg">

@@ -59,7 +59,7 @@
       goto('/order');
     } else {
       // 導向訂餐頁面
-      goto('/statistics');
+      goto('/user');
     }
   }
 
