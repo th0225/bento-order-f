@@ -21,7 +21,7 @@
     >
       {date}
     </div>
-    <div class="h-8 w-8 leading-8 sm:hidden
+    <div class="h-8 w-8 leading-8 md:hidden
       {day === 'Sat' || day === 'Sun' ? 'text-red-500 dark:text-red-400'
       : 'dark:text-dark-text text-calico-text'}">
       {day}

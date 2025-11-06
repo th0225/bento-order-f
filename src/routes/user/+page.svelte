@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { getToken } from '$lib/api';
 
   interface User {
     id: number;
@@ -8,119 +9,138 @@
     role: string;
   }
 
-  let users: User[] = [
-    { id: 1, account: 'admin', name: '管理員', role: 'admin' },
-    { id: 2, account: 'user1', name: '使用者一', role: 'user' }
-  ];
+  let users: User[] = [];
   let account = '';
   let name = '';
-  let password = '';
-  let loading = false;
-  let errorMsg = '';
+
+  const apiUrl = 'http://localhost:5162/user/users';
+
+  function getHeaders() {
+    return {
+      Authorization: `Bearer ${getToken()}`,
+      'Content-Type': 'application/json'
+    };
+  }
 
   // 取得使用者清單
   async function loadUsers() {
-    const res = await fetch('http://localhost:5162/user/users');
-    users = await res.json();
-
-    console.log(users);
+    try {
+      const res = await fetch(apiUrl, { headers: getHeaders() });
+      if (!res.ok) throw new Error(`載入失敗: ${res.status}`);
+      users = await res.json();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   // 新增使用者
   async function addUser() {
-    if (!account || !name || !password) {
-      errorMsg = '請輸入完整資料';
-      return;
-    }
+    if (!account || !name) return;
 
-    loading = true;
-    errorMsg = '';
-
-    const res = await fetch('http://localhost:5162/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ account, name, password })
-    });
-
-    if (res.ok) {
-      await loadUsers();
+    try {
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ account, password: account, name, role: 'user' })
+      });
+      if (!res.ok) throw new Error(`新增失敗: ${res.status}`);
       account = '';
       name = '';
-      password = '';
-    } else {
-      errorMsg = '新增使用者失敗';
+      await loadUsers();
+    } catch (err) {
+      console.error(err);
     }
-
-    loading = false;
   }
 
   // 刪除使用者
   async function deleteUser(id: number) {
     if (!confirm(`確定要刪除使用者 ID = ${id} ?`)) return;
-
-    const res = await fetch(`http://localhost:5162/users/${id}`, {
-      method: 'DELETE'
-    });
-
-    if (res.ok) {
+    try {
+      const res = await fetch(`${apiUrl}/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      if (!res.ok) throw new Error(`刪除失敗: ${res.status}`);
       users = users.filter((u) => u.id !== id);
-    } else {
-      alert('刪除失敗');
+    } catch (err) {
+      console.error(err);
     }
   }
 
   onMount(loadUsers);
 </script>
 
-<div class="space-y-6">
+<div class="mx-2 space-y-6">
   <!-- Table: 使用者列表 -->
   <div>
-    <table class="min-w-full overflow-hidden rounded-lg shadow-lg">
+    <table class="w-full min-w-full table-fixed overflow-hidden rounded-lg shadow-lg">
       <thead
         class="bg-calico-secondary text-calico-black dark:bg-dark-secondary
-                    dark:text-dark-black"
+          dark:text-dark-black"
       >
         <tr>
-          <th class="px-3 py-2 text-left">ID</th>
-          <th class="px-3 py-2 text-left">Account</th>
-          <th class="px-3 py-2 text-left">Name</th>
-          <th class="px-3 py-2 text-left">Role</th>
-          <th class="px-3 py-2"></th>
+          <th class="w-1/12 px-3 py-2 text-left">ID</th>
+          <th class="w-3/12 px-3 py-2 text-left">Account</th>
+          <th class="w-3/12 px-3 py-2 text-left">Name</th>
+          <th class="w-2/12 px-3 py-2 text-left">Role</th>
+          <th class="w-3/12 px-3 py-2 text-right">Action</th>
         </tr>
       </thead>
       <tbody>
         {#each users as user}
           <tr
             class="border-b bg-calico-bg text-calico-black hover:bg-gray-200
-                    dark:bg-dark-bg dark:text-dark-black dark:hover:bg-slate-700"
+                   dark:bg-dark-bg dark:text-dark-black dark:hover:bg-slate-700"
           >
             <td class="px-3 py-2">{user.id}</td>
             <td class="px-3 py-2">{user.account}</td>
             <td class="px-3 py-2">{user.name}</td>
             <td class="px-3 py-2">{user.role}</td>
             <td class="px-3 py-2 text-right">
-              <button
-                on:click={() => deleteUser(user.id)}
-                class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-              >
-                刪除
-              </button>
+              {#if user.role !== 'admin'}
+                <button
+                  on:click={() => deleteUser(user.id)}
+                  class="cursor-pointer rounded bg-red-500 px-3 py-1 text-sm text-white
+                    transition-colors hover:bg-red-600"
+                >
+                  刪除
+                </button>
+              {/if}
             </td>
           </tr>
         {/each}
+
+        <!-- 新增列 -->
         <tr
           class="border-b bg-calico-bg text-calico-black hover:bg-gray-200
-              dark:bg-dark-bg dark:text-dark-black dark:hover:bg-slate-700"
+                 dark:bg-dark-bg dark:text-dark-black dark:hover:bg-slate-700"
         >
+          <td class="px-3 py-2"></td>
           <td class="px-3 py-2">
-            <input class="border rounded px-2 py-1 w-full">
+            <input
+              type="text"
+              bind:value={account}
+              placeholder="Account"
+              class="box-border w-full rounded border p-1 focus:ring-2
+                focus:ring-calico-orange focus:outline-none"
+            />
           </td>
-          <td class="px-3 py-2"></td>
-          <td class="px-3 py-2"></td>
+          <td class="px-3 py-2">
+            <input
+              type="text"
+              bind:value={name}
+              placeholder="Name"
+              class="box-border w-full rounded border p-1 focus:ring-2
+                focus:ring-calico-orange focus:outline-none"
+            />
+          </td>
           <td class="px-3 py-2"></td>
           <td class="px-3 py-2 text-right">
             <button
-              class="rounded bg-sky-500 px-3 py-1 text-sm text-white hover:bg-sky-600"
+              type="submit"
+              on:click={() => addUser()}
+              class="cursor-pointer rounded bg-sky-500 px-3 py-1 text-sm text-white
+                transition-colors hover:bg-sky-600"
             >
               新增
             </button>
