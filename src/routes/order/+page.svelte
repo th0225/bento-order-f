@@ -125,7 +125,7 @@
     </div>
 
     <!-- 桌機版 Table -->
-    <table class="hidden md:table w-full table-fixed border-separate border-spacing-x-1
+    <table class="hidden md:table w-full table-fixed border-separate border-spacing-x-2
       border-spacing-y-1 text-center">
       <!-- 顯示星期 -->
       <thead>

@@ -8,7 +8,7 @@
 
 <div
   class="block flex w-full flex-col items-center gap-1 rounded-md bg-calico-secondary
-         p-2 md:table-cell md:w-auto dark:bg-dark-secondary"
+         p-2 dark:bg-dark-secondary"
 >
   <div class="flex w-full justify-between flex-row items-center">
     <div
