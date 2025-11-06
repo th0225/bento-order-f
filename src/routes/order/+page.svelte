@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { ArrowLeft, ArrowRight } from '@lucide/svelte';
   import MealSelector from '$lib/components/MealSelector.svelte';
+  import DateCell from '$lib/components/DateCell.svelte';
 
   let months: string[] = [
     'January',
@@ -93,22 +94,22 @@
   });
 </script>
 
-<div class="flex justify-center max-w-6xl mx-auto">
+<div class="mx-auto flex max-w-6xl justify-center">
   <div>
-    <div class="mx-auto flex w-full max-w-md items-center justify-between">
+    <div class="mx-auto flex w-full max-w-md items-center justify-between mb-3">
       <button
         on:click={getPrevMonth}
-        class="rounded-full px-3 py-1 text-calico-black transition hover:bg-calico-hover
-              dark:text-dark-black dark:hover:bg-dark-hover"
+        class="cursor-pointer rounded-full px-3 py-1 text-calico-black transition
+              hover:bg-calico-hover dark:text-dark-black dark:hover:bg-dark-hover"
       >
         <ArrowLeft />
       </button>
 
       <h1
-        class="text-2xl font-bold text-calico-orange hover:text-calico-hover
-                dark:text-dark-orange dark:hover:text-dark-hover"
+        class="text-2xl font-bold text-calico-orange
+                hover:text-calico-hover dark:text-dark-orange dark:hover:text-dark-hover"
       >
-        <button on:click={getToday}>
+        <button on:click={getToday} class="cursor-pointer">
           {selectedYear}
           {months[selectedMonth]}
         </button>
@@ -116,28 +117,26 @@
 
       <button
         on:click={getNextMonth}
-        class="rounded-full px-3 py-1 text-calico-black transition hover:bg-calico-hover
-              dark:text-dark-black dark:hover:bg-dark-hover"
+        class="cursor-pointer rounded-full px-3 py-1 text-calico-black transition
+              hover:bg-calico-hover dark:text-dark-black dark:hover:bg-dark-hover"
       >
         <ArrowRight />
       </button>
     </div>
 
-    <table
-      class="w-full table-fixed border-separate border-spacing-2 border-spacing-y-4
-                 text-center"
-    >
+    <!-- 桌機版 Table -->
+    <table class="hidden md:table w-full table-fixed border-separate border-spacing-x-1
+      border-spacing-y-1 text-center">
+      <!-- 顯示星期 -->
       <thead>
-        <tr
-          class="bg-calico-secondary text-calico-text dark:bg-dark-secondary
-                dark:text-dark-text"
-        >
+        <tr class="bg-calico-secondary text-calico-text dark:bg-dark-secondary
+          dark:text-dark-text">
           {#each days as day}
-            <th class="rounded-md px-2 py-1 font-semibold">{day}</th>
+            <th class="rounded-md p-1 font-semibold">{day}</th>
           {/each}
         </tr>
       </thead>
-
+      <!-- 顯示日期 -->
       <tbody>
         {#each dateWeekMapping as week}
           <tr>
@@ -146,23 +145,13 @@
                 <td class="h-10"></td>
               {:else}
                 <td>
-                  <div class="bg-calico-secondary dark:bg-dark-secondary rounded-md p-2">
-                    <div
-                      class="rounded-full text-center mb-0.5
-                            text-calico-text dark:text-dark-text
-                            ${item.date === currentDate &&
-                          selectedMonth === currentMonth &&
-                          selectedYear === currentYear
-                        ? ' bg-calico-orange font-bold text-calico-text dark:text-dark-orange '
-                        : item.day === 'Sat' || item.day === 'Sun'
-                          ? ' text-red-500 dark:text-red-400 '
-                          : ''}"
-                    >
-                      {item.date}
-                    </div>
-                    <MealSelector />
-                    <MealSelector />
-                  </div>
+                  <DateCell
+                    date={item.date}
+                    day={item.day}
+                    isToday={item.date === currentDate &&
+                            selectedMonth === currentMonth &&
+                            selectedYear === currentYear}
+                  />
                 </td>
               {/if}
             {/each}
@@ -170,5 +159,23 @@
         {/each}
       </tbody>
     </table>
+
+    <!-- 手機版卡片 -->
+    <div class="md:hidden flex flex-col gap-2 w-full">
+      {#each dateWeekMapping as week}
+        {#each week as item}
+          {#if item !== null}
+            <DateCell
+              date={item.date}
+              day={item.day}
+              isToday={item.date === currentDate &&
+                      selectedMonth === currentMonth &&
+                      selectedYear === currentYear}
+            />
+          {/if}
+        {/each}
+      {/each}
+    </div>
+
   </div>
 </div>

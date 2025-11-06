@@ -3,7 +3,7 @@
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
   import { get } from 'svelte/store';
-    import { User } from '@lucide/svelte';
+  import { onMount } from 'svelte';
 
   let account = '';
   let password = '';
@@ -54,17 +54,36 @@
     setAuth(JSON.stringify(get(authStore)));
     setToken(data.token);
 
-    if (data.role == 'user')
-    {
+    if (data.role == 'user') {
       // 導向訂餐頁面
       goto('/order');
-    }
-    else
-    {
+    } else {
       // 導向訂餐頁面
       goto('/statistics');
     }
   }
+
+  onMount(() => {
+    // 檢查登入狀態
+    const saved = localStorage.getItem('auth');
+    if (!saved) {
+      return;
+    }
+
+    authStore.set(JSON.parse(saved));
+
+    if (!$authStore.isLoggedIn) {
+      return;
+    }
+
+    if ($authStore.user?.role === 'user') {
+      // 導向訂餐頁面
+      goto('/order');
+    } else {
+      // 導向訂餐頁面
+      goto('/statistics');
+    }
+  });
 </script>
 
 <div class="flex min-h-screen items-center justify-center">

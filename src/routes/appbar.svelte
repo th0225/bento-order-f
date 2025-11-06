@@ -3,10 +3,8 @@
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
   import { clearAuth, clearToken } from '$lib/api';
-  import { Menu, Ham, User, LogOut, Sun, Moon, Github } from '@lucide/svelte';
+  import { Menu, Ham, User, Sun, Moon, Github } from '@lucide/svelte';
   import { initTheme, toggleTheme } from '$lib/theme';
-
-  import Sidebar from '$lib/components/Sidebar.svelte';
 
   // 是否為深色模式
   let isDark = false;
@@ -20,12 +18,6 @@
     initTheme();
     isDark = document.documentElement.classList.contains('dark');
   });
-
-  let sidebarOpen = false;
-
-  function toggleSidebar() {
-    sidebarOpen = !sidebarOpen;
-  }
 
   function logout() {
     authStore.set({ isLoggedIn: false, user: null });
@@ -42,17 +34,10 @@
         px-4 py-3 text-calico-black dark:bg-dark-secondary dark:text-dark-black"
   >
     <div class="container mx-auto flex items-center justify-between">
-      <button
-        class="flex cursor-pointer items-center gap-2 hover:text-gray-500 md:hidden"
-        on:click={toggleSidebar}
-      >
-        <Menu />
-      </button>
-
       <!-- 左側logo -->
       <div class="flex items-center gap-2 text-xl font-semibold">
         <Ham size="28"/>
-        <span class="text-2xl font-semibold">Bento Order</span>
+        <span class="sm:text-2xl font-semibold">Bento Order</span>
       </div>
 
       <!-- 右側 -->
