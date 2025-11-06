@@ -70,7 +70,7 @@
   onMount(loadUsers);
 </script>
 
-<div class="mx-2 space-y-6">
+<div class="space-y-6 mx-auto flex max-w-4xl justify-center">
   <!-- Table: 使用者列表 -->
   <div>
     <table class="w-full min-w-full table-fixed overflow-hidden rounded-lg shadow-lg">
