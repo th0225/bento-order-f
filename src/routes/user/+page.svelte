@@ -13,7 +13,7 @@
   let account = '';
   let name = '';
 
-  const apiUrl = 'http://localhost:5162/user/users';
+  const apiUrl = 'http://localhost:5162/user';
 
   function getHeaders() {
     return {
@@ -25,7 +25,7 @@
   // 取得使用者清單
   async function loadUsers() {
     try {
-      const res = await fetch(apiUrl, { headers: getHeaders() });
+      const res = await fetch(`${apiUrl}/get`, { headers: getHeaders() });
       if (!res.ok) throw new Error(`載入失敗: ${res.status}`);
       users = await res.json();
     } catch (err) {
@@ -38,7 +38,7 @@
     if (!account || !name) return;
 
     try {
-      const res = await fetch(apiUrl, {
+      const res = await fetch(`${apiUrl}/add`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({ account, password: account, name, role: 'user' })
@@ -56,7 +56,7 @@
   async function deleteUser(id: number) {
     if (!confirm(`確定要刪除使用者 ID = ${id} ?`)) return;
     try {
-      const res = await fetch(`${apiUrl}/${id}`, {
+      const res = await fetch(`${apiUrl}/delete/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
       });
@@ -70,7 +70,7 @@
   onMount(loadUsers);
 </script>
 
-<div class="space-y-6 mx-auto flex max-w-4xl justify-center">
+<div class="mx-auto flex max-w-4xl justify-center space-y-6">
   <!-- Table: 使用者列表 -->
   <div>
     <table class="w-full min-w-full table-fixed overflow-hidden rounded-lg shadow-lg">
