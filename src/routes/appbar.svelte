@@ -47,9 +47,9 @@
           <User />{$authStore.user?.name}
           <button
             on:click={logout}
-            class="dark:bg-orange-orange rounded-lg bg-calico-orange px-4 py-1 font-medium
+            class="dark:bg-orange-orange rounded-lg bg-calico-orange px-2 py-1 font-medium
               text-calico-text transition-colors hover:bg-calico-hover cursor-pointer
-              dark:text-dark-text dark:hover:bg-dark-hover"
+              dark:hover:bg-dark-hover"
           >
             登出
           </button>
@@ -81,8 +81,4 @@
       </div>
     </div>
   </nav>
-
-  <!-- <div class="flex">
-    <Sidebar isOpen={sidebarOpen} onClose={() => (sidebarOpen = false)} />
-  </div> -->
 </div>

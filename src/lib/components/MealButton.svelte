@@ -1,33 +1,37 @@
 <script lang="ts">
   import { mealTypes } from '$lib/stores/meal';
 
-  export let meal = 0;
+  // export let meal = 0;
+  let { meal } = $props<{ meal: number }>();
 
-  let state = 0;
-  let isActive = false;
+  let buttonState = $state(0);
+  let isActive = $state(false);
+  let colorClass = $state('');
 
   function toggleColor() {
-    state = (state + 1) % 3;
+    buttonState = (buttonState + 1) % 3;
 
     isActive = true;
     setTimeout(() => (isActive = false), 150);
   }
 
-  $: colorClass =
-    state === 0
+  $effect(() => {
+    colorClass =
+    buttonState === 0
       ? 'bg-gray-400 hover:bg-gray-500'
-      : state === 1
+      : buttonState === 1
         ? 'bg-calico-orange dark:hover:bg-dark-hover bg-calico-orange hover:bg-calico-hover'
         : 'bg-green-500 hover:bg-green-600';
+  })
 </script>
 
 <button
-  on:click={toggleColor}
+  onclick={toggleColor}
   class={`transform rounded-lg px-4 py-2 font-semibold text-white transition-all duration-200
     ${colorClass} ${isActive ? 'scale-105' : 'scale-100'}`}
 >
   {mealTypes[meal]}
-  {#if state === 2}
+  {#if buttonState === 2}
     <span class="rounded-full bg-white/90 ml-2 px-2 py-0.5 text-xs font-bold text-emerald-600">
       x2
     </span>

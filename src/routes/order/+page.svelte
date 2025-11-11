@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ArrowLeft, ArrowRight } from '@lucide/svelte';
-  import MealSelector from '$lib/components/MealSelector.svelte';
   import DateCell from '$lib/components/DateCell.svelte';
 
+  // 月份與星期陣列
   let months: string[] = [
     'January',
     'February',
@@ -20,23 +20,35 @@
   ];
   let days: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  // 目前日期
   let currentYear: number = new Date().getFullYear();
   let currentMonth: number = new Date().getMonth();
   let currentDate: number = new Date().getDate();
 
-  let selectedYear: number = currentYear;
-  let selectedMonth: number = currentMonth;
-  let dateWeekMapping: ({ date: number; day: string } | null)[][] = [];
+  // 選擇的年份、月份與日期週映射
+  let selectedYear: number = $state(currentYear);
+  let selectedMonth: number = $state(currentMonth);
+
+  // 日期與星期的對應關係陣列
+  let dateWeekMapping: ({ date: number; day: string } | null)[][] = $state([]);
 
   // 整個月的天數
   let daysInMonth: number = new Date(currentYear, currentMonth + 1, 0).getDate();
 
+  // 整個月選擇的餐點資料
+  let selectedMeal = $state<Record<string, string[]>>({});
+
+  // 取得日期與星期的對應關係
   function getDateWeekMapping(selectYear: number, selectMonth: number) {
     let week = [];
     let month = [];
+
     for (let startDay = 1; startDay <= daysInMonth; startDay++) {
       const date = new Date(selectYear, selectMonth, startDay);
       const dayOfWeek = date.getDay();
+
+      const key = `${selectYear}-${selectMonth}-${startDay}`;
+      selectedMeal[key] ??= ['---', '---'];
 
       if (startDay === 1) {
         for (let i = 0; i < dayOfWeek; i++) {
@@ -57,6 +69,7 @@
     return month;
   }
 
+  // 取得今天的日期
   function getToday() {
     selectedYear = currentYear;
     selectedMonth = currentMonth;
@@ -64,6 +77,7 @@
     dateWeekMapping = getDateWeekMapping(selectedYear, selectedMonth);
   }
 
+  // 取得下一個月份
   function getNextMonth() {
     selectedMonth += 1;
 
@@ -75,6 +89,7 @@
     dateWeekMapping = getDateWeekMapping(selectedYear, selectedMonth);
   }
 
+  // 取得上一個月份
   function getPrevMonth() {
     selectedMonth -= 1;
 
@@ -86,6 +101,12 @@
     dateWeekMapping = getDateWeekMapping(selectedYear, selectedMonth);
   }
 
+  // 儲存訂單
+  function saveOrder() {
+    console.log('Selected Meal:', selectedMeal);
+  }
+
+  // 初始化
   onMount(() => {
     selectedYear = currentYear;
     selectedMonth = currentMonth;
@@ -96,9 +117,9 @@
 
 <div class="mx-auto flex max-w-6xl justify-center">
   <div>
-    <div class="mx-auto flex w-full max-w-md items-center justify-between mb-3">
+    <div class="mx-auto mb-3 flex w-full max-w-md items-center justify-between">
       <button
-        on:click={getPrevMonth}
+        onclick={getPrevMonth}
         class="cursor-pointer rounded-full px-3 py-1 text-calico-black transition
               hover:bg-calico-hover dark:text-dark-black dark:hover:bg-dark-hover"
       >
@@ -109,28 +130,41 @@
         class="text-2xl font-bold text-calico-orange
                 hover:text-calico-hover dark:text-dark-orange dark:hover:text-dark-hover"
       >
-        <button on:click={getToday} class="cursor-pointer">
+        <button onclick={getToday} class="cursor-pointer">
           {selectedYear}
           {months[selectedMonth]}
         </button>
       </h1>
 
       <button
-        on:click={getNextMonth}
+        onclick={getNextMonth}
         class="cursor-pointer rounded-full px-3 py-1 text-calico-black transition
               hover:bg-calico-hover dark:text-dark-black dark:hover:bg-dark-hover"
       >
         <ArrowRight />
       </button>
+
+      <button
+        onclick={saveOrder}
+        class="dark:bg-orange-orange cursor-pointer rounded-lg bg-calico-orange px-4 py-1
+              font-medium text-calico-text transition-colors hover:bg-calico-hover
+              dark:hover:bg-dark-hover"
+      >
+        儲存
+      </button>
     </div>
 
     <!-- 桌機版 Table -->
-    <table class="hidden md:table w-full table-fixed border-separate border-spacing-x-2
-      border-spacing-y-1 text-center">
+    <table
+      class="hidden w-full table-fixed border-separate border-spacing-x-2 border-spacing-y-1
+      text-center md:table"
+    >
       <!-- 顯示星期 -->
       <thead>
-        <tr class="bg-calico-secondary text-calico-text dark:bg-dark-secondary
-          dark:text-dark-text">
+        <tr
+          class="bg-calico-secondary text-calico-text dark:bg-dark-secondary
+          dark:text-dark-text"
+        >
           {#each days as day}
             <th class="rounded-md p-1 font-semibold">{day}</th>
           {/each}
@@ -149,8 +183,11 @@
                     date={item.date}
                     day={item.day}
                     isToday={item.date === currentDate &&
-                            selectedMonth === currentMonth &&
-                            selectedYear === currentYear}
+                      selectedMonth === currentMonth &&
+                      selectedYear === currentYear}
+                    bind:selectedMeal={
+                      selectedMeal[`${selectedYear}-${selectedMonth}-${item.date}`]
+                    }
                   />
                 </td>
               {/if}
@@ -161,7 +198,7 @@
     </table>
 
     <!-- 手機版卡片 -->
-    <div class="md:hidden flex flex-col gap-2 w-full">
+    <div class="flex w-full flex-col gap-2 md:hidden">
       {#each dateWeekMapping as week}
         {#each week as item}
           {#if item !== null}
@@ -169,13 +206,13 @@
               date={item.date}
               day={item.day}
               isToday={item.date === currentDate &&
-                      selectedMonth === currentMonth &&
-                      selectedYear === currentYear}
+                selectedMonth === currentMonth &&
+                selectedYear === currentYear}
+              bind:selectedMeal={selectedMeal[`${selectedYear}-${selectedMonth}-${item.date}`]}
             />
           {/if}
         {/each}
       {/each}
     </div>
-
   </div>
 </div>
