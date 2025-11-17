@@ -44,7 +44,9 @@
       <div class="flex items-center gap-8">
         <!-- 使用者名稱及登出 -->
         <div class="flex items-center gap-3">
-          <User />{$authStore.user?.name}
+          <div class="flex hidden sm:inline-flex gap-2">
+            <User />{$authStore.user?.name}
+          </div>
           <button
             on:click={logout}
             class="dark:bg-orange-orange rounded-lg bg-calico-orange px-2 py-1 font-medium

@@ -2,9 +2,8 @@
   import { onMount } from 'svelte';
   import { ArrowLeft, ArrowRight } from '@lucide/svelte';
   import DateCell from '$lib/components/DateCell.svelte';
-  import { apiFetch, getAuth } from '$lib/api';
+  import { apiFetch } from '$lib/api';
   import type { Meal } from '$lib/stores/meal';
-  import { authStore } from '$lib/stores/auth';
 
   // 月份與星期陣列
   let months: string[] = [
@@ -117,18 +116,13 @@
     for (let i = 1; i <= daysInMonth; i++) {
       const key = toDateKey(selectedYear, selectedMonth, i).split('T')[0];
 
-      for (let j = 0; j < 2; j++) {
-        if (selectedMeal[key][j] === '---') {
-          continue;
-        }
-
-        let meal: Meal = {
+      let meal: Meal = {
           orderDate: key,
-          mealType: selectedMeal[key][j]
+          mealType1: selectedMeal[key][0],
+          mealType2: selectedMeal[key][1]
         };
 
-        monthMeals.push(meal);
-      }
+      monthMeals.push(meal);
     }
 
     console.log('Saving Meals:', monthMeals);
@@ -157,11 +151,8 @@
     for (const m of meal) {
       let dateKey = m.orderDate.split('T')[0];
 
-      if (selectedMeal[dateKey][0] === '---') {
-        selectedMeal[dateKey][0] = m.mealType;
-      } else {
-        selectedMeal[dateKey][1] = m.mealType;
-      }
+      selectedMeal[dateKey][0] = m.mealType1;
+      selectedMeal[dateKey][1] = m.mealType2;
     }
   });
 </script>
@@ -259,7 +250,9 @@
               isToday={item.date === String(currentDate).padStart(2, '0') &&
                 selectedMonth === currentMonth &&
                 selectedYear === currentYear}
-              bind:selectedMeal={selectedMeal[`${selectedYear}-${selectedMonth}-${item.date}`]}
+              bind:selectedMeal={
+                selectedMeal[`${selectedYear}-${selectedMonth}-${item.date}`]
+              }
             />
           {/if}
         {/each}
