@@ -2,6 +2,9 @@
   import { onMount } from 'svelte';
   import { ArrowLeft, ArrowRight } from '@lucide/svelte';
   import DateCell from '$lib/components/DateCell.svelte';
+  import { apiFetch, getAuth } from '$lib/api';
+  import type { Meal } from '$lib/stores/meal';
+  import { authStore } from '$lib/stores/auth';
 
   // 月份與星期陣列
   let months: string[] = [
@@ -30,7 +33,7 @@
   let selectedMonth: number = $state(currentMonth);
 
   // 日期與星期的對應關係陣列
-  let dateWeekMapping: ({ date: number; day: string } | null)[][] = $state([]);
+  let dateWeekMapping: ({ date: string; day: string } | null)[][] = $state([]);
 
   // 整個月的天數
   let daysInMonth: number = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -47,7 +50,7 @@
       const date = new Date(selectYear, selectMonth, startDay);
       const dayOfWeek = date.getDay();
 
-      const key = `${selectYear}-${selectMonth}-${startDay}`;
+      const key = `${selectYear}-${selectMonth}-${String(startDay).padStart(2, '0')}`;
       selectedMeal[key] ??= ['---', '---'];
 
       if (startDay === 1) {
@@ -56,7 +59,7 @@
         }
       }
 
-      week.push({ date: startDay, day: days[dayOfWeek] });
+      week.push({ date: String(startDay).padStart(2, '0'), day: days[dayOfWeek] });
 
       if (week.length === 7) {
         month.push(week);
@@ -101,17 +104,65 @@
     dateWeekMapping = getDateWeekMapping(selectedYear, selectedMonth);
   }
 
+  // 取得訂單
+  async function getOrder(year: number, month: number) {
+    return await apiFetch(`/meal/get/${year}/${month}`, {
+      method: 'GET'
+    });
+  }
+
   // 儲存訂單
-  function saveOrder() {
-    console.log('Selected Meal:', selectedMeal);
+  async function saveOrder() {
+    let monthMeals: Meal[] = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      const key = toDateKey(selectedYear, selectedMonth, i).split('T')[0];
+
+      for (let j = 0; j < 2; j++) {
+        if (selectedMeal[key][j] === '---') {
+          continue;
+        }
+
+        let meal: Meal = {
+          orderDate: key,
+          mealType: selectedMeal[key][j]
+        };
+
+        monthMeals.push(meal);
+      }
+    }
+
+    console.log('Saving Meals:', monthMeals);
+
+    return await apiFetch(`/meal/batchUpdate`, {
+      method: 'POST',
+      body: JSON.stringify(monthMeals)
+    });
+  }
+
+  function toDateKey(year: number, month: number, day: number | string) {
+    const mm = String(month).padStart(2, '0');
+    const dd = String(day).padStart(2, '0');
+    return `${year}-${mm}-${dd}T00:00:00`;
   }
 
   // 初始化
-  onMount(() => {
+  onMount(async () => {
     selectedYear = currentYear;
     selectedMonth = currentMonth;
 
     dateWeekMapping = getDateWeekMapping(selectedYear, selectedMonth);
+
+    const meal = await getOrder(selectedYear, selectedMonth);
+    console.log('Fetched Meal:', meal);
+    for (const m of meal) {
+      let dateKey = m.orderDate.split('T')[0];
+
+      if (selectedMeal[dateKey][0] === '---') {
+        selectedMeal[dateKey][0] = m.mealType;
+      } else {
+        selectedMeal[dateKey][1] = m.mealType;
+      }
+    }
   });
 </script>
 
@@ -182,7 +233,7 @@
                   <DateCell
                     date={item.date}
                     day={item.day}
-                    isToday={item.date === currentDate &&
+                    isToday={item.date === String(currentDate).padStart(2, '0') &&
                       selectedMonth === currentMonth &&
                       selectedYear === currentYear}
                     bind:selectedMeal={
@@ -205,7 +256,7 @@
             <DateCell
               date={item.date}
               day={item.day}
-              isToday={item.date === currentDate &&
+              isToday={item.date === String(currentDate).padStart(2, '0') &&
                 selectedMonth === currentMonth &&
                 selectedYear === currentYear}
               bind:selectedMeal={selectedMeal[`${selectedYear}-${selectedMonth}-${item.date}`]}

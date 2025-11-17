@@ -32,6 +32,7 @@ export function clearAuth() {
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = getToken();
+  // console.log('Using token:', token);
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {})
