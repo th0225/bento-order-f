@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { clearAuth, clearToken, setAuth, setToken } from '$lib/api';
+  import { clearAuth, setAuth } from '$lib/api';
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
   import { get } from 'svelte/store';
@@ -19,6 +19,7 @@
     // 向後端發送登入請求
     const res = await fetch('http://localhost:5162/user/login', {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -31,7 +32,6 @@
         isLoggedIn: false,
         user: null
       });
-      clearToken();
       clearAuth();
       error = '帳號或密碼錯誤';
       return;
@@ -52,7 +52,7 @@
 
     // 儲存認證狀態
     setAuth(JSON.stringify(get(authStore)));
-    setToken(data.token);
+    // setToken(data.token);
 
     if (data.role == 'user') {
       // 導向訂餐頁面
@@ -110,6 +110,7 @@
           type="text"
           bind:value={account}
           placeholder="A012345"
+          autocomplete="username"
           class="w-full rounded-lg border border-calico-soft bg-calico-bg px-4 py-2
                 focus:ring-2 focus:ring-calico-orange focus:outline-none
                 dark:border-gray-600 dark:bg-dark-bg dark:text-gray-100"
@@ -128,6 +129,7 @@
           type="password"
           bind:value={password}
           placeholder="••••••••"
+          autocomplete="current-password"
           class="w-full rounded-lg border border-calico-soft bg-calico-bg px-4 py-2
                 focus:ring-2 focus:ring-calico-orange focus:outline-none
                 dark:border-gray-600 dark:bg-dark-bg dark:text-gray-100"

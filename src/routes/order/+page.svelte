@@ -106,7 +106,8 @@
   // 取得訂單
   async function getOrder(year: number, month: number) {
     return await apiFetch(`/meal/get/${year}/${month}`, {
-      method: 'GET'
+      method: 'GET',
+      credentials: 'include',
     });
   }
 
@@ -129,6 +130,7 @@
 
     return await apiFetch(`/meal/batchUpdate`, {
       method: 'POST',
+      credentials: 'include',
       body: JSON.stringify(monthMeals)
     });
   }

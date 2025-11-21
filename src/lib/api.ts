@@ -1,20 +1,5 @@
 const API_BASE = 'http://localhost:5162';
 
-// 儲存Token
-export function setToken(token: string) {
-  localStorage.setItem('jwt', token);
-}
-
-// 取得Token
-export function getToken() {
-  return localStorage.getItem('jwt');
-}
-
-// 刪除Token
-export function clearToken() {
-  localStorage.removeItem('jwt');
-}
-
 // 儲存Auth資訊
 export function setAuth(auth: string) {
   localStorage.setItem('auth', auth);
@@ -31,11 +16,8 @@ export function clearAuth() {
 }
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
-  const token = getToken();
-  // console.log('Using token:', token);
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {})
   };
 
   const response = await fetch(`${API_BASE}${path}`, {
@@ -45,7 +27,6 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
   // 自動處理 Token 過期
   if (response.status === 401) {
-    clearToken();
     throw new Error('未授權或登入已過期，請重新登入');
   }
 

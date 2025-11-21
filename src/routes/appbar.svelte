@@ -2,8 +2,8 @@
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth';
   import { goto } from '$app/navigation';
-  import { clearAuth, clearToken } from '$lib/api';
-  import { Menu, Ham, User, Sun, Moon, Github } from '@lucide/svelte';
+  import { clearAuth } from '$lib/api';
+  import { Ham, User, Sun, Moon, Github } from '@lucide/svelte';
   import { initTheme, toggleTheme } from '$lib/theme';
 
   // 是否為深色模式
@@ -22,7 +22,6 @@
   function logout() {
     authStore.set({ isLoggedIn: false, user: null });
     clearAuth();
-    clearToken();
     goto('/');
   }
 </script>

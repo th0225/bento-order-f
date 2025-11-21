@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getToken } from '$lib/api';
 
   interface User {
     id: number;
@@ -17,7 +16,6 @@
 
   function getHeaders() {
     return {
-      Authorization: `Bearer ${getToken()}`,
       'Content-Type': 'application/json'
     };
   }
@@ -25,7 +23,11 @@
   // 取得使用者清單
   async function loadUsers() {
     try {
-      const res = await fetch(`${apiUrl}/get`, { headers: getHeaders() });
+      const res = await fetch(`${apiUrl}/get`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: getHeaders()
+      });
       if (!res.ok) throw new Error(`載入失敗: ${res.status}`);
       users = await res.json();
     } catch (err) {
@@ -40,6 +42,7 @@
     try {
       const res = await fetch(`${apiUrl}/add`, {
         method: 'POST',
+        credentials: 'include',
         headers: getHeaders(),
         body: JSON.stringify({ account, password: account, name, role: 'user' })
       });
@@ -58,6 +61,7 @@
     try {
       const res = await fetch(`${apiUrl}/delete/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: getHeaders()
       });
       if (!res.ok) throw new Error(`刪除失敗: ${res.status}`);
